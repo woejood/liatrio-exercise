@@ -10,7 +10,7 @@ def index():
     now = datetime.now()
     timestamp = datetime.timestamp(now)
     response = jsonify({'message':message,'timestamp':timestamp})
-    return response.content_type("application/json")
+    return response
 
 if __name__ == '__main__':
     app.run(debug=False,host='0.0.0.0')
