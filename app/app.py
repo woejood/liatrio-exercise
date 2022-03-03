@@ -1,4 +1,5 @@
-from datetime import datetime
+import calendar
+import time
 import json
 from flask import Flask, render_template, jsonify
 
@@ -7,8 +8,9 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     message = "Automate all the things!"
-    now = datetime.now()
-    timestamp = datetime.timestamp(now)
+    # thanks Google!
+    gmt = time.gmtime()
+    timestamp = calendar.timegm(gmt)
     response = jsonify({'message':message,'timestamp':timestamp})
     return response
 
