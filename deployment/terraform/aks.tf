@@ -8,7 +8,6 @@ resource "random_id" "log_analytics_workspace_name_suffix" {
 }
 
 resource "azurerm_log_analytics_workspace" "liatrio" {
-  # The WorkSpace name has to be unique across the whole of azure, not just the current subscription/tenant.
   name                = "${local.log_analytics_workspace_name}-${random_id.log_analytics_workspace_name_suffix.dec}"
   location            = var.log_analytics_workspace_location
   resource_group_name = local.resource_group_name
@@ -77,10 +76,3 @@ resource "azurerm_kubernetes_cluster" "liatrio" {
 }
 
 data "azurerm_subscription" "current" {}
-# Assign AcrPull role to service principal
-# resource "azurerm_role_assignment" "acrpull_role" {
-#   scope                            = "${data.azurerm_subscription.current.id}/resourceGroups/${local.resource_group_name}"
-#   role_definition_name             = "AcrPull"
-#   principal_id                     = var.client_id
-#   skip_service_principal_aad_check = true
-# }
