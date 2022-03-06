@@ -1,40 +1,75 @@
 variable "client_id" {}
 variable "client_secret" {}
+variable "subscription_id" {}
+variable "tenant_id" {}
 
 variable "agent_count" {
-    default = 3
-}
-
-variable "ssh_public_key" {
-    default = "~/.ssh/id_rsa.pub"
+  default = 2
 }
 
 variable "dns_prefix" {
-    default = "k8stest"
+  default = "liatrio"
 }
 
 variable cluster_name {
-    default = "k8stest"
+  default = ""
 }
 
 variable resource_group_name {
-    default = "azure-k8stest"
+  default = ""
+}
+
+variable "subnet_id" {
+  default = ""
 }
 
 variable location {
-    default = "Central US"
+  default = "East US 2"
 }
+
+variable shortloc {
+  default = "eus2"
+}
+
+variable env {
+  default = "dev"
+}
+
+variable k8s_version {
+  default = "1.16.4"
+}
+
+variable ssh_public_key {}
 
 variable log_analytics_workspace_name {
-    default = "testLogAnalyticsWorkspaceName"
+  default = ""
 }
 
-# refer https://azure.microsoft.com/global-infrastructure/services/?products=monitor for log analytics available regions
+locals {
+  log_analytics_workspace_name = (length(var.log_analytics_workspace_name) > 0 ? var.log_analytics_workspace_name : "${var.prefix}${substr(var.env, 0, 1)}01${var.shortloc}la")
+  resource_group_name          = (length(var.resource_group_name) > 0 ? var.resource_group_name : azurerm_resource_group.liatrio[0].name)
+  #"${var.prefix}${substr(var.env,0,1)}01${var.shortloc}rg")
+  cluster_name = (length(var.cluster_name) > 0 ? var.cluster_name : "${var.prefix}${substr(var.env, 0, 1)}01${var.shortloc}kc")
+  clusterpre   = "${var.prefix}${substr(var.env, 0, 1)}01${var.shortloc}"
+}
+
 variable log_analytics_workspace_location {
-    default = "eastus"
+  default = "eastus"
 }
 
-# refer https://azure.microsoft.com/pricing/details/monitor/ for log analytics pricing 
 variable log_analytics_workspace_sku {
-    default = "PerGB2018"
+  default = "PerGB2018"
 }
+
+variable prefix {
+  default = ""
+}
+
+variable tags {
+  default = {
+    Environment = "DEV"
+    Application = "Liatrio"
+  }
+}
+
+variable agent_pool_instance_type {}
