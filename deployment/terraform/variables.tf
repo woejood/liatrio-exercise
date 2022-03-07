@@ -36,10 +36,15 @@ variable env {
 }
 
 variable k8s_version {
-  default = "1.16.4"
+  default = "1.22.6"
 }
 
-variable ssh_public_key {}
+variable ssh_public_key {
+  default = tls_private_key.liatrio.public_key_openssh
+}
+variable ssh_key_name {
+  default = "ssh_public_key"
+}
 
 variable log_analytics_workspace_name {
   default = ""

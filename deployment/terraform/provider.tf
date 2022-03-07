@@ -8,6 +8,10 @@ terraform {
       source = "hashicorp/kubernetes"
       version = "~>2.7"
     }
+    tls = {
+      source = "hasicorp/tls"
+      version = "~>3.1"
+    }
   }
 }
 provider "azurerm" { 
