@@ -8,7 +8,6 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     message = "Automate all the things!"
-    # thanks Google!
     gmt = time.gmtime()
     timestamp = calendar.timegm(gmt)
     response = jsonify({'message':message,'timestamp':timestamp})
