@@ -25,3 +25,11 @@ output "kube_config" {
 output "host" {
   value = "${azurerm_kubernetes_cluster.liatrio.kube_config.0.host}"
 }
+
+output "public_key" {
+  value = "${tls_private_key.liatrio.public_key_openssh}"
+}
+
+output "private_key" {
+  value = "${tls_private_key.liatrio.private_key_pem}"
+}
