@@ -7,3 +7,5 @@ cd deployment/
 terraform init
 terraform plan
 terraform apply
+
+terraform output kube_config
