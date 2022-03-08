@@ -1,7 +1,7 @@
 # Liatrio Interview Exercise
-Cloud Native Engineer Interview Exercise
+Cloud Native Engineer Interview Exercise that consists of the following:
 
-### Application
+### API
  A simple python3/Flask REST endpoint that returns a JSON payload with the current timestamp and a static message.
 
 ### Enviornment
