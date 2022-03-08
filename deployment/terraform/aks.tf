@@ -14,8 +14,8 @@ resource "azurerm_virtual_network" "liatrio" {
 }
 
 resource "azurerm_subnet" "liatrio" {
-  count = (length(var.subnet_id) > 0 ? 0 : 1)
-  name = "${local.clusterpre}sn"
+  count                = (length(var.subnet_id) > 0 ? 0 : 1)
+  name                 = "${local.clusterpre}sn"
   resource_group_name  = azurerm_resource_group.liatrio.name
   virtual_network_name = azurerm_virtual_network.liatrio.name
   address_prefixes     = ["10.0.1.0/24"]
