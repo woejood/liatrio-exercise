@@ -1,7 +1,5 @@
 subscription_id          = "f54b6421-a4ec-4a99-9954-5e5cb586452e"
 tenant_id                = "4a93a64a-10ba-47b6-b922-0ca5b905fc58"
-client_id                = "0cacae36-b5bd-4241-8b2a-9e775a4a7c83"
-client_secret            = "9ZrGHR3uvZac.mw8mp0RSvv74iSUQpssRW"
 prefix                   = "liatrio"
 #resource_group_name      = "liatriod01eus2rg"
 #subnet_id                = "/subscriptions/f54b6421-a4ec-4a99-9954-5e5cb586452e/resourceGroups/liatriod01eus2rg/providers/Microsoft.Network/virtualNetworks/liatriod01eus2vn/subnets/liatriod01eus2sn"
