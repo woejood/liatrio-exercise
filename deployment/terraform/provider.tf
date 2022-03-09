@@ -9,7 +9,7 @@ terraform {
       version = "~>2.8"
     }
     tls = {
-      source = "hasicorp/tls"
+      source = "hashicorp/tls"
       version = "~>3.1"
     }
   }
@@ -27,5 +27,9 @@ provider "kubernetes" {
   client_certificate     = base64decode(azurerm_kubernetes_cluster.liatrio.kube_config.0.client_certificate)
   client_key             = base64decode(azurerm_kubernetes_cluster.liatrio.kube_config.0.client_key)
   cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.liatrio.kube_config.0.cluster_ca_certificate)
+  features {}
+}
+
+provider "tls" {
   features {}
 }

@@ -40,7 +40,7 @@ variable k8s_version {
 }
 
 variable ssh_public_key {
-  default = tls_private_key.liatrio.public_key_openssh
+  default = ""
 }
 variable ssh_key_name {
   default = "ssh_public_key"
