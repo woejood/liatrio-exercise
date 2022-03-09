@@ -9,7 +9,7 @@ resource "azurerm_virtual_network" "liatrio" {
   name                = "${local.clusterpre}vn"
   location            = var.location
   address_space       = ["10.0.0.0/16"]
-  resource_group_name = azurerm_resource_group.liatrio[0].name
+  resource_group_name = (length(var.resource_group_name) > 0 ? var.resource_group_name :azurerm_resource_group.liatrio[0].name)
   
 }
 
@@ -58,7 +58,7 @@ resource "azurerm_kubernetes_cluster" "liatrio" {
     admin_username = "ubuntu"
 
     ssh_key {
-      key_data = var.ssh_public_key
+      key_data = (length(var.ssh_public_key) > 0 ? var.ssh_public_key : tls_private_key.liatrio.public_key_openssh)
     }
   }
   
@@ -75,9 +75,7 @@ resource "azurerm_kubernetes_cluster" "liatrio" {
     node_count      = var.agent_count
     vm_size         = var.agent_pool_instance_type
     os_disk_size_gb = 50
-    
-    #vnet_subnet_id = (length(var.subnet_id) > 0 ? var.subnet_id : null)
-    vnet_subnet_id = azurerm_subnet.liatrio[0].subnet_id
+    vnet_subnet_id = (length(var.subnet_id) > 0 ? var.subnet_id : azurerm_subnet.liatrio[0].id)
   }
   
   service_principal {

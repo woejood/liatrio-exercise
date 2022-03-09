@@ -20,6 +20,7 @@ output "cluster_password" {
 
 output "kube_config" {
   value = "${azurerm_kubernetes_cluster.liatrio.kube_config_raw}"
+  sensitive = true
 }
 
 output "host" {
@@ -32,4 +33,5 @@ output "public_key" {
 
 output "private_key" {
   value = "${tls_private_key.liatrio.private_key_pem}"
+  sensitive = true
 }

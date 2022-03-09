@@ -31,5 +31,5 @@ provider "kubernetes" {
 }
 
 provider "tls" {
-  features {}
+ 
 }
