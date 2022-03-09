@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: liatrio-api
+  labels:
+    app: liatrio-api
+spec:
+  selector:
+    matchLabels:
+      app: liatrio-api
+  template:
+    metadata:
+      labels:
+        app: liatrio-api
+    spec:
+      containers:
+      - image: woejood/liatrio-api:1.0.0
+        name: liatrio-api
+        ports:
+        - containerPort: 5000

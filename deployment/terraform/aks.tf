@@ -9,15 +9,15 @@ resource "azurerm_virtual_network" "liatrio" {
   name                = "${local.clusterpre}vn"
   location            = var.location
   address_space       = ["10.0.0.0/16"]
-  resource_group_name = azurerm_resource_group.liatrio.name
+  resource_group_name = azurerm_resource_group.liatrio[0].name
   
 }
 
 resource "azurerm_subnet" "liatrio" {
   count                = (length(var.subnet_id) > 0 ? 0 : 1)
   name                 = "${local.clusterpre}sn"
-  resource_group_name  = azurerm_resource_group.liatrio.name
-  virtual_network_name = azurerm_virtual_network.liatrio.name
+  resource_group_name  = azurerm_resource_group.liatrio[0].name
+  virtual_network_name = azurerm_virtual_network.liatrio[0].name
   address_prefixes     = ["10.0.1.0/24"]
 }
 
@@ -75,9 +75,9 @@ resource "azurerm_kubernetes_cluster" "liatrio" {
     node_count      = var.agent_count
     vm_size         = var.agent_pool_instance_type
     os_disk_size_gb = 50
-
-    vnet_subnet_id = (length(var.subnet_id) > 0 ? var.subnet_id : null)
-
+    
+    #vnet_subnet_id = (length(var.subnet_id) > 0 ? var.subnet_id : null)
+    vnet_subnet_id = azurerm_subnet.liatrio[0].subnet_id
   }
   
   service_principal {
