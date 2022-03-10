@@ -53,9 +53,8 @@ variable log_analytics_workspace_name {
 locals {
   log_analytics_workspace_name = (length(var.log_analytics_workspace_name) > 0 ? var.log_analytics_workspace_name : "${var.prefix}${substr(var.env, 0, 1)}01${var.shortloc}la")
   resource_group_name          = (length(var.resource_group_name) > 0 ? var.resource_group_name : azurerm_resource_group.liatrio[0].name)
-  #"${var.prefix}${substr(var.env,0,1)}01${var.shortloc}rg")
-  cluster_name = (length(var.cluster_name) > 0 ? var.cluster_name : "${var.prefix}${substr(var.env, 0, 1)}01${var.shortloc}kc")
-  clusterpre   = "${var.prefix}${substr(var.env, 0, 1)}01${var.shortloc}"
+  cluster_name                 = (length(var.cluster_name) > 0 ? var.cluster_name : "${var.prefix}${substr(var.env, 0, 1)}01${var.shortloc}kc")
+  clusterpre                   = "${var.prefix}${substr(var.env, 0, 1)}01${var.shortloc}"
 }
 
 variable log_analytics_workspace_location {
