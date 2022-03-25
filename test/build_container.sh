@@ -4,7 +4,7 @@
 NAME="woejood/liatrio-api"
 TAG="1.0.0"
 
-docker build ../../app/ -t $NAME:$TAG #--label $NAME:$TAG
+docker build ../ -t $NAME:$TAG #--label $NAME:$TAG
 
 docker tag $NAME:$TAG "${NAME}:latest"
 docker push $NAME:$TAG
