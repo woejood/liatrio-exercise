@@ -1,14 +1,11 @@
-FROM ubuntu
+FROM python:3
 
-RUN apt-get update -y
-RUN apt-get install python3.10 -y
-RUN apt-get install python3-pip -y
-RUN python3 -m pip install flask
-RUN python3 -m pip install virtualenv
+RUN pip install flask
+RUN pip install virtualenv
 
 ADD . /app
 WORKDIR /app
 
 EXPOSE 5000
 
-CMD ["python3 app.py"]
+CMD ["python", "./app.py"]
