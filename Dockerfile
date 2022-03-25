@@ -3,7 +3,7 @@ FROM python:3
 RUN pip install flask
 RUN pip install virtualenv
 
-ADD . /app
+ADD /app/ /app
 WORKDIR /app
 
 EXPOSE 5000

@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: api-load-balancer
+  name: liatrio-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: api-load-balancer
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: api-load-balancer
+    spec:
+      containers:
+      - image: woejood/liatrio-api:1.0.0
+        name: liatrio-api
+        ports:
+        - containerPort: 5000
