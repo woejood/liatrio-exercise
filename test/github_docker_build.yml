@@ -1,53 +1,70 @@
-name: Docker Image CI
+# This workflow will build a docker container, publish it to Azure Container Registry, and deploy it to Azure Kubernetes Service.
+#
+# To configure this workflow:
+#
+# 1. Set up the following secrets in your workspace: 
+#     a. REGISTRY_USERNAME with ACR username
+#     b. REGISTRY_PASSWORD with ACR Password
+#     c. AZURE_CREDENTIALS with the output of `az ad sp create-for-rbac --sdk-auth`
+#
+# 2. Change the values for the REGISTRY_NAME, CLUSTER_NAME, CLUSTER_RESOURCE_GROUP and NAMESPACE environment variables (below).
 
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
+on: [push]
 
+# Environment variables available to all jobs and steps in this workflow
+env:
+  REGISTRY_NAME: my-registry-name
+  CLUSTER_NAME: my-cluster-name
+  CLUSTER_RESOURCE_GROUP: my-cluster-resource-group
+  NAMESPACE: default
+  
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
+    environment: dev
     steps:
-    - uses: actions/checkout@v2
-    - name: Build the Docker image
-      run: docker build app --file Dockerfile --tag woejood/liatrio-api:$(date +%s)
-      
-    - name: Publish Docker
-    - uses: elgohr/Publish-Docker-Github-Action@3.04
+    - uses: actions/checkout@master
+    
+    # Connect to Azure Container registry (ACR)
+    - uses: azure/docker-login@v1
       with:
-        # The name of the image you would like to push
-       name: 
-       # The login username for the registry
-       username: 
-       # The login password for the registry
-       password: 
-        # Use registry for pushing to a custom registry
-        registry: # optional
-        # Use snapshot to push an additional image
-       snapshot: # optional
-    # Set the default branch of your repository (default: master)
-    default_branch: # optional
-    # Use dockerfile when you would like to explicitly build a Dockerfile
-    dockerfile: # optional
-    # Use workdir when you would like to change the directory for building
-    workdir: # optional
-    # Use context when you would like to change the Docker build context.
-    context: # optional
-    # Use buildargs when you want to pass a list of environment variables as build-args
-    buildargs: # optional
-    # Use buildoptions when you want to configure options for building
-    buildoptions: # optional
-    # Use cache when you have big images, that you would only like to build partially
-    cache: # optional
-    # Use tags when you want to bring your own tags (separated by comma)
-    tags: # optional
-    # Use tag_names when you want to push tags/release by their git name
-    tag_names: # optional
-    # Push semver docker tags. e.g. image:1.2.3, image:1.2, image:1
-    tag_semver: # optional
-    # Set no_push to true if you want to prevent the action from pushing to a registry (default: false)
-    no_push: # optional
+        login-server: ${{ env.REGISTRY_NAME }}.azurecr.io
+        username: ${{ secrets.REGISTRY_USERNAME }} 
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+    
+    # Container build and push to a Azure Container registry (ACR)
+    - run: |
+        docker build . -t ${{ env.REGISTRY_NAME }}.azurecr.io/myimage:${{ github.sha }}
+        docker push ${{ env.REGISTRY_NAME }}.azurecr.io/myimage:${{ github.sha }}
+    
+    # Set the target Azure Kubernetes Service (AKS) cluster. 
+    - uses: azure/aks-set-context@v1
+      with:
+        creds: '${{ secrets.AZURE_CREDENTIALS }}'
+        cluster-name: ${{ env.CLUSTER_NAME }}
+        resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
+    
+    # Create namespace if doesn't exist
+    - run: |
+        kubectl create namespace ${{ env.NAMESPACE }} --dry-run -o json | kubectl apply -f -
+    
+    # Create imagepullsecret for Azure Container registry (ACR)
+    - uses: azure/k8s-create-secret@v1
+      with:
+        container-registry-url: ${{ env.REGISTRY_NAME }}.azurecr.io
+        container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
+        container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+        secret-name: ${{ env.REGISTRY_NAME }}-registry-connection
+        namespace: ${{ env.NAMESPACE }}
+    
+    # Deploy app to AKS
+    - uses: azure/k8s-deploy@v1
+      with:
+        manifests: |
+          manifests/deployment.yml
+          manifests/service.yml
+        images: |
+          ${{ env.REGISTRY_NAME }}.azurecr.io/myimage:${{ github.sha }}
+        imagepullsecrets: |
+          ${{ env.REGISTRY_NAME }}-registry-connection
+        namespace: ${{ env.NAMESPACE }}

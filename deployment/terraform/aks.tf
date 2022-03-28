@@ -8,7 +8,7 @@ resource "azurerm_virtual_network" "liatrio" {
   count               = (length(var.subnet_id) > 0 ? 0 : 1)
   name                = "${local.clusterpre}vn"
   location            = var.location
-  address_space       = ["10.0.0.0/16"]
+  address_space       = ["10.10.0.0/16"]
   resource_group_name = (length(var.resource_group_name) > 0 ? var.resource_group_name :azurerm_resource_group.liatrio[0].name)
   
 }
@@ -18,7 +18,7 @@ resource "azurerm_subnet" "liatrio" {
   name                 = "${local.clusterpre}sn"
   resource_group_name  = azurerm_resource_group.liatrio[0].name
   virtual_network_name = azurerm_virtual_network.liatrio[0].name
-  address_prefixes     = ["10.0.1.0/24"]
+  address_prefixes     = ["10.10.1.0/24"]
 }
 
 resource "random_id" "log_analytics_workspace_name_suffix" {
@@ -71,7 +71,7 @@ resource "azurerm_kubernetes_cluster" "liatrio" {
   }
   
   default_node_pool {
-    name            = "${var.prefix}${lower(substr(var.env, 0, 1))}1${var.shortloc}"
+    name            = "${lower(substr(var.prefix, 0, 5))}${lower(substr(var.env, 0, 1))}1${var.shortloc}"
     node_count      = var.agent_count
     vm_size         = var.agent_pool_instance_type
     os_disk_size_gb = 50
